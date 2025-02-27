@@ -1,2 +1,6 @@
 *.gz
 */*.gz
+
+__pycache__/
+performance/__pycache_/
+*/__pycache__/*
