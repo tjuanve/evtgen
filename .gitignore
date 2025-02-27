@@ -2,5 +2,11 @@
 */*.gz
 
 __pycache__/
+__pycache__/*
+performance/__pycache_/*
 performance/__pycache_/
 */__pycache__/*
+
+reco_files/
+hdf/
+Ternary_Classifier
