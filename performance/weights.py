@@ -1,55 +1,62 @@
-def combineweights (f2,f3,nfile2,nfile3,conventional,prompt,Astro):
-    #w1 = Get_Weights(f1,nfiles=nfile1,conventional=conventional,prompt=prompt,Astro=Astro)
-    w2 = Get_Weights(f2,nfiles=nfile2,conventional=conventional,prompt=prompt,Astro=Astro)
-    w3 = Get_Weights(f3,nfiles=nfile3,conventional=conventional,prompt=prompt,Astro=Astro)
-    w = np.concatenate((w2,w3))
-    return w
+import simweights
+import numpy as np
+import pickle
 
-def Get_Weights(file,nfiles,conventional,prompt,Astro):
+
+# def combineweights( files, conventional = False, prompt = False, astro = True ):
+
+#     weights = []
+
+#     for file in files:
+#         hdf_file = files[file]['hdf_file']
+#         nfiles   = files[file]['nfiles']
+#         w = Get_Weights(hdf_file,nfiles=nfiles,conventional=conventional,prompt=prompt,astro=astro)
+#         weights.append(w)
+
+#     return np.concatenate(weights)
+
+spline_file = '/data/ana/Diffuse/NNMFit/MCEq_splines/v1.2.1/MCEq_splines_PRI-Gaisser-H4a_INT-SIBYLL23c_allfluxes.pickle'
+
+def Append_Weights(file):
     
+    hdf_file = file['hdf_file']
+    nfiles   = file['nfiles']
     
-    if conventional:
-            
-            flux_keys_conv =  ['conv_antinumu','conv_numu','conv_antinue','conv_nue','conv_antinutau','conv_nutau']
-            spline_file = '/data/ana/Diffuse/NNMFit/MCEq_splines/v1.2.1/MCEq_splines_PRI-Gaisser-H4a_INT-SIBYLL23c_allfluxes.pickle'
-            spline_object_conv = SplineHandler(spline_file, flux_keys_conv)
-            conv_flux = spline_object_conv.return_weight
-            
-            generator_conv = lambda pdgid, energy, cos_zen: conv_flux(pdgid, energy, cos_zen)
-            
-            weighter = simweights.NuGenWeighter(file,nfiles=nfiles)
-            weights = weighter.get_weights(generator_conv)
+    # conventional            
+    flux_keys_conv =  ['conv_antinumu','conv_numu','conv_antinue','conv_nue','conv_antinutau','conv_nutau']
+    spline_object_conv = SplineHandler(spline_file, flux_keys_conv)
+    conv_flux = spline_object_conv.return_weight
+    
+    generator_conv = lambda pdgid, energy, cos_zen: conv_flux(pdgid, energy, cos_zen)
+    
+    weighter = simweights.NuGenWeighter(hdf_file,nfiles=nfiles)
+    file['variables']['Weights_Conventional'] = weighter.get_weights(generator_conv)
             
         
-    if prompt:
-            
-            flux_keys_pr =  ['pr_antinumu','pr_numu','pr_antinue','pr_nue','pr_antinutau','pr_nutau']
-            spline_file = '/data/ana/Diffuse/NNMFit/MCEq_splines/v1.2.1/MCEq_splines_PRI-Gaisser-H4a_INT-SIBYLL23c_allfluxes.pickle'
-            spline_object_pr = SplineHandler(spline_file, flux_keys_pr)
-            pr_flux = spline_object_pr.return_weight
-            
-            generator_pr = lambda pdgid, energy, cos_zen: pr_flux(pdgid, energy, cos_zen)
-            
-            weighter = simweights.NuGenWeighter(file,nfiles=nfiles)
-            weights = weighter.get_weights(generator_pr)
-            
-
-    if Astro:
-        def AstroFluxModel(pdgid, energy, cos_zen):
-            flux = 0.5*(2.12*1e-18)*(energy/1e5)**-2.87
-            return flux
-
-        weighter = simweights.NuGenWeighter(file,nfiles=nfiles)
-        weights = weighter.get_weights(AstroFluxModel)
+    # prompt
+    flux_keys_pr =  ['pr_antinumu','pr_numu','pr_antinue','pr_nue','pr_antinutau','pr_nutau']
+    spline_object_pr = SplineHandler(spline_file, flux_keys_pr)
+    pr_flux = spline_object_pr.return_weight
     
+    generator_pr = lambda pdgid, energy, cos_zen: pr_flux(pdgid, energy, cos_zen)
     
+    weighter = simweights.NuGenWeighter(hdf_file,nfiles=nfiles)
+    file['variables']['Weights_Prompt'] = weighter.get_weights(generator_pr)
+            
 
-    return weights
+    # astro
+    def AstroFluxModel(pdgid, energy, cos_zen):
+        flux = 0.5*(2.12*1e-18)*(energy/1e5)**-2.87
+        return flux
+
+    weighter = simweights.NuGenWeighter(hdf_file,nfiles=nfiles)
+    file['variables']['Weights_Astro'] = weighter.get_weights(AstroFluxModel)
+
+    return file
 
 
 
 
-import pickle
 class SplineHandler(object):
     """
     Class implementing the flux weight calculation from a

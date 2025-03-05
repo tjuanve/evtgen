@@ -1,33 +1,57 @@
+import numpy as np
+import matplotlib as mat
+import matplotlib.font_manager as font_manager
+import matplotlib.pyplot as plt
 
-def get_variables( file ):
+font_axis_label = {'family': 'serif',
+        'color':  'black',
+        'weight': 'normal',
+        'size': 26,
+        }
+font_title = {'family': 'serif',
+        'color':  'black',
+        'weight': 'bold',
+        'size': 35,
+        }
+font_legend = font_manager.FontProperties(family='serif',
+                                   weight='normal',
+                                   style='normal', size=17)
 
-    result = {}
+def get_variables( hdf_file ):
 
-    ######### NuE_bfr Variables #########
-    PrimaryNeutrinoEnergy_NuE_bfr = NuE_bfr_file['I3MCWeightDict']['PrimaryNeutrinoEnergy'].values
-    PrimartNeutrinoType_NuE_bfr = NuE_bfr_file['I3MCWeightDict']['PrimaryNeutrinoType'].values
-    PrimaryNeutrinoAzimuth_NuE_bfr = NuE_bfr_file['I3MCWeightDict']['PrimaryNeutrinoAzimuth'].values
-    PrimaryNeutrinoZenith_NuE_bfr = NuE_bfr_file['I3MCWeightDict']['PrimaryNeutrinoZenith'].values
-    MCInteractionType_NuE_bfr = NuE_bfr_file['I3MCWeightDict']['InteractionType'].values
-    #MCInteractionDepth_NuE_bfr = NuE_bfr_file['penetrating_depth'].value.values
+    variables = {}
 
-    TrueAzimuth_NuE_bfr = NuE_bfr_file['TrueAzimuth'].value.values
-    TrueETot_NuE_bfr = NuE_bfr_file['TrueETot'].value.values
-    TrueL_NuE_bfr = NuE_bfr_file['TrueL'].value.values
-    TrueZenith_NuE_bfr = NuE_bfr_file['TrueZenith'].value.values
-    TrueInteractionEventclass_NuE_bfr = NuE_bfr_file['MCInteractionEventclass'].value.values
+    variables['PrimaryNeutrinoEnergy'] = hdf_file['I3MCWeightDict']['PrimaryNeutrinoEnergy'].values
+    variables['PrimaryNeutrinoType'] = hdf_file['I3MCWeightDict']['PrimaryNeutrinoType'].values
+    variables['PrimaryNeutrinoAzimuth'] = hdf_file['I3MCWeightDict']['PrimaryNeutrinoAzimuth'].values
+    variables['PrimaryNeutrinoZenith'] = hdf_file['I3MCWeightDict']['PrimaryNeutrinoZenith'].values
+    variables['InteractionType'] = hdf_file['I3MCWeightDict']['InteractionType'].values
 
-    RecoAzimuth_NuE_bfr = NuE_bfr_file['RecoAzimuth'].value.values
-    RecoEConfinement_NuE_bfr = NuE_bfr_file['RecoEConfinement'].value.values
-    RecoERatio_NuE_bfr = NuE_bfr_file['RecoERatio'].value.values
-    RecoZenith_NuE_bfr = NuE_bfr_file['RecoZenith'].value.values
-    RecoL_NuE_bfr = NuE_bfr_file['RecoL'].value.values
-    RecoETot_NuE_bfr = NuE_bfr_file['RecoETot'].value.values
-    FinalEventClass_NuE_bfr = NuE_bfr_file['FinalTopology'].value.values
-    ConventionalSelfVetoWeight_NuE_bfr = NuE_bfr_file['ConventionalAtmosphericPassingFractions'].value.values
-    PromptSelfVetoWeight_NuE_bfr = NuE_bfr_file['PromptAtmosphericPassingFractions'].value.values
+    variables['TrueAzimuth'] = hdf_file['TrueAzimuth'].value.values
+    variables['TrueETot'] = hdf_file['TrueETot'].value.values
+    variables['TrueL'] = hdf_file['TrueL'].value.values
+    variables['TrueZenith'] = hdf_file['TrueZenith'].value.values
+    variables['MCInteractionEventclass'] = hdf_file['MCInteractionEventclass'].value.values
 
+    variables['RecoAzimuth'] = hdf_file['RecoAzimuth'].value.values
+    variables['RecoEConfinement'] = hdf_file['RecoEConfinement'].value.values
+    variables['RecoERatio'] = hdf_file['RecoERatio'].value.values
+    variables['RecoZenith'] = hdf_file['RecoZenith'].value.values
+    variables['RecoL'] = hdf_file['RecoL'].value.values
+    variables['RecoETot'] = hdf_file['RecoETot'].value.values
+    variables['FinalTopology'] = hdf_file['FinalTopology'].value.values
+    variables['FinalEventClass'] = hdf_file['FinalEventClass'].value.values
+    variables['FinalTopology_evtgen'] = hdf_file['FinalTopology_evtgen'].value.values
+    variables['FinalEventClass_evtgen'] = hdf_file['FinalEventClass_evtgen'].value.values
+    variables['ConventionalAtmosphericPassingFractions'] = hdf_file['ConventionalAtmosphericPassingFractions'].value.values
+    variables['PromptAtmosphericPassingFractions'] = hdf_file['PromptAtmosphericPassingFractions'].value.values
 
+    # evt gen
+    variables['RecoL_evtgen'] = hdf_file['MyEgeneratorOutputFrameKey']['cascade_cascade_00001_distance'].values
+    # variables['FinalTopology_evtgen'] = hdf_file['FinalTopology_evtgen'].value.values
+    # variables['FinalEventClass_evtgen'] = hdf_file['FinalEventClass_evtgen'].value.values
+
+    return variables
 
 def error_cal(bin_edges,weights,data):
     errors = []
@@ -59,9 +83,7 @@ def error_cal(bin_edges,weights,data):
 
 def plot_2dHist(x,y,weights,xbins_start,xbins_stop,xbins,ybins_start,ybins_stop,ybins,\
                 xlogspace,ylogspace,title,eventcount,ax):
-    import matplotlib as mat
-    import matplotlib.font_manager as font_manager
-    
+
     
     if xlogspace:
         x_bins=np.logspace(xbins_start,xbins_stop,xbins)
@@ -138,6 +160,8 @@ def plot_2dHist(x,y,weights,xbins_start,xbins_stop,xbins,ybins_start,ybins_stop,
     clb = plt.colorbar(h)
     
     clb.ax.tick_params(labelsize=16)
+
+    return clb
     
     
     
