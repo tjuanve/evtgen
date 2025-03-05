@@ -4,11 +4,47 @@ import sys, os, glob
 # set the inputs
 reco_version = "v0"
 
+# # SnowStorm_NuTau_highE
+# reconstruction_type  = "RecowithBfr"
+# simulation_type      = "Baseline" # Perturbed
+# simulation_dataset   = "22086" 
+# simulation_subfolder = "0000000-0000999"
+# simulation_flavor    = "NuTau"
+
+# # SnowStorm_NuTau_midE
+# reconstruction_type  = "RecowithBfr"
+# simulation_type      = "Baseline" # Perturbed
+# simulation_dataset   = "22085" 
+# simulation_subfolder = "0000000-0000999"
+# simulation_flavor    = "NuTau"
+
+# # SnowStorm_NuE_midE
+# reconstruction_type  = "RecowithBfr"
+# simulation_type      = "Baseline" # Perturbed
+# simulation_dataset   = "22082" 
+# simulation_subfolder = "0000000-0000999"
+# simulation_flavor    = "NuE"
+
+# # SnowStorm_NuE_highE
+# reconstruction_type  = "RecowithBfr"
+# simulation_type      = "Baseline" # Perturbed
+# simulation_dataset   = "22083" 
+# simulation_subfolder = "0000000-0000999"
+# simulation_flavor    = "NuE"
+
+# SnowStorm_NuMu_midE
 reconstruction_type  = "RecowithBfr"
 simulation_type      = "Baseline" # Perturbed
-simulation_dataset   = "22086" # also 22085 for nutau
+simulation_dataset   = "22043" 
 simulation_subfolder = "0000000-0000999"
-simulation_flavor    = "NuTau"
+simulation_flavor    = "NuMu"
+
+# # SnowStorm_NuMu_highE
+# reconstruction_type  = "RecowithBfr"
+# simulation_type      = "Baseline" # Perturbed
+# simulation_dataset   = "22044" 
+# simulation_subfolder = "0000000-0000999"
+# simulation_flavor    = "NuMu"
 
 # fixed paths
 work_path = "/data/user/tvaneede/GlobalFit/EventGenerator"
@@ -52,14 +88,12 @@ for INFILES in infiles_list:
     JOBID = filename.split("_")[2] # gives the run number
     OUTFILE = f"{reco_out_path}/Reco_{simulation_flavor}_{JOBID}_out.i3.bz2"
 
-    print(INFILES)
-    print(filename, JOBID)
-    print(OUTFILE)
+    # print(INFILES)
+    # print(filename, JOBID)
+    # print(OUTFILE)
 
     outfile.write(f"JOB {JOBID} reco.sub\n")
     outfile.write(f'VARS {JOBID} LOGDIR="{log_dir}"\n')
     outfile.write(f'VARS {JOBID} JOBID="{JOBID}"\n')
     outfile.write(f'VARS {JOBID} INFILES="{INFILES}"\n')
     outfile.write(f'VARS {JOBID} OUTFILE="{OUTFILE}"\n')
-
-    break
