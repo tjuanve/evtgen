@@ -41,15 +41,13 @@ def get_variables( hdf_file ):
     variables['RecoETot'] = hdf_file['RecoETot'].value.values
     variables['FinalTopology'] = hdf_file['FinalTopology'].value.values
     variables['FinalEventClass'] = hdf_file['FinalEventClass'].value.values
-    variables['FinalTopology_evtgen'] = hdf_file['FinalTopology_evtgen'].value.values
-    variables['FinalEventClass_evtgen'] = hdf_file['FinalEventClass_evtgen'].value.values
     variables['ConventionalAtmosphericPassingFractions'] = hdf_file['ConventionalAtmosphericPassingFractions'].value.values
     variables['PromptAtmosphericPassingFractions'] = hdf_file['PromptAtmosphericPassingFractions'].value.values
 
     # evt gen
-    variables['RecoL_evtgen'] = hdf_file['MyEgeneratorOutputFrameKey']['cascade_cascade_00001_distance'].values
-    # variables['FinalTopology_evtgen'] = hdf_file['FinalTopology_evtgen'].value.values
-    # variables['FinalEventClass_evtgen'] = hdf_file['FinalEventClass_evtgen'].value.values
+    variables['RecoL_evtgen'] = np.abs(hdf_file['MyEgeneratorOutputFrameKey']['cascade_cascade_00001_distance'].values)
+    variables['FinalTopology_evtgen'] = hdf_file['FinalTopology_evtgen'].value.values
+    variables['FinalEventClass_evtgen'] = hdf_file['FinalEventClass_evtgen'].value.values
 
     return variables
 
