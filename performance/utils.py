@@ -47,6 +47,9 @@ def get_variables( hdf_file ):
     # evt gen
     variables['RecoL_evtgen'] = np.abs(hdf_file['MyEgeneratorOutputFrameKey']['cascade_cascade_00001_distance'].values)
     variables['RecoL_evtgen_noabs'] = hdf_file['MyEgeneratorOutputFrameKey']['cascade_cascade_00001_distance'].values
+    variables['RecoE1_evtgen'] = hdf_file['MyEgeneratorOutputFrameKey']['cascade_energy'].values 
+    variables['RecoE2_evtgen'] = hdf_file['MyEgeneratorOutputFrameKey']['cascade_cascade_00001_energy'].values 
+    variables['RecoETot_evtgen'] = variables['RecoE1_evtgen'] + variables['RecoE2_evtgen']
     variables['FinalTopology_evtgen'] = hdf_file['FinalTopology_evtgen'].value.values
     variables['FinalEventClass_evtgen'] = hdf_file['FinalEventClass_evtgen'].value.values
 

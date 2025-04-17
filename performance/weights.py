@@ -3,18 +3,6 @@ import numpy as np
 import pickle
 
 
-# def combineweights( files, conventional = False, prompt = False, astro = True ):
-
-#     weights = []
-
-#     for file in files:
-#         hdf_file = files[file]['hdf_file']
-#         nfiles   = files[file]['nfiles']
-#         w = Get_Weights(hdf_file,nfiles=nfiles,conventional=conventional,prompt=prompt,astro=astro)
-#         weights.append(w)
-
-#     return np.concatenate(weights)
-
 spline_file = '/data/ana/Diffuse/NNMFit/MCEq_splines/v1.2.1/MCEq_splines_PRI-Gaisser-H4a_INT-SIBYLL23c_allfluxes.pickle'
 
 def Append_Weights(file):
@@ -31,8 +19,8 @@ def Append_Weights(file):
     
     weighter = simweights.NuGenWeighter(hdf_file,nfiles=nfiles)
     file['variables']['Weights_Conventional'] = weighter.get_weights(generator_conv)
+    file['variables']['Weights_Conventional_PassedVeto'] = file['variables']['Weights_Conventional']*file['variables']['ConventionalAtmosphericPassingFractions']
             
-        
     # prompt
     flux_keys_pr =  ['pr_antinumu','pr_numu','pr_antinue','pr_nue','pr_antinutau','pr_nutau']
     spline_object_pr = SplineHandler(spline_file, flux_keys_pr)
@@ -42,7 +30,10 @@ def Append_Weights(file):
     
     weighter = simweights.NuGenWeighter(hdf_file,nfiles=nfiles)
     file['variables']['Weights_Prompt'] = weighter.get_weights(generator_pr)
-            
+    file['variables']['Weights_Prompt_PassedVeto'] = file['variables']['Weights_Prompt']*file['variables']['PromptAtmosphericPassingFractions']
+
+    # combine atmospheric
+    file['variables']['Weights_Atmospheric'] = file['variables']['Weights_Conventional_PassedVeto'] + file['variables']['Weights_Prompt_PassedVeto']
 
     # astro
     def AstroFluxModel(pdgid, energy, cos_zen):
