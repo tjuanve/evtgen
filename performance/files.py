@@ -16,3 +16,10 @@ files["v0"] = {
     "NuTau_E3" : {"file_path" : "/data/user/tvaneede/GlobalFit/EventGenerator/hdf/v0/RecowithBfr/Baseline/22086/22086_0000000-0000999_DoubleCascades.hdf5", 'nfiles' : 999},
 
 }
+
+files["taupede_v3"] = {
+
+    "NuTau_E2" : {"file_path" : "/data/user/tvaneede/GlobalFit/run_taupede_ftp/hdf/hdf_files/v3/22634.hdf5", 'nfiles' : 50},
+    "NuTau_E3" : {"file_path" : "/data/user/tvaneede/GlobalFit/run_taupede_ftp/hdf/hdf_files/v3/22635.hdf5", 'nfiles' : 50},
+
+}
